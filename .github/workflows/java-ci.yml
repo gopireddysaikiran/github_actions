@@ -1,13 +1,10 @@
 name: Java CI
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -25,4 +22,3 @@ jobs:
 
       - name: Run Java application
         run: java Main
-
