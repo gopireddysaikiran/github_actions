@@ -48,7 +48,7 @@ output application/json
 ---
 {
     message: "Hello from MuleSoft!",
-    application: "hello-mule",
+    application: "hello-mule12"    ,
     author: "Saikiran"
 }
                 ]]></ee:set-payload>
