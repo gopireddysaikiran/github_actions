@@ -2,22 +2,30 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="
+           http://maven.apache.org/POM/4.0.0
+           https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+
 
     <!-- ====================================================== -->
     <!-- PROJECT INFORMATION -->
     <!-- ====================================================== -->
 
     <groupId>com.example</groupId>
+
     <artifactId>hello-mule</artifactId>
+
     <version>1.0.0</version>
 
     <packaging>mule-application</packaging>
 
     <name>hello-mule</name>
-    <description>A simple Mule 4 REST API for learning.</description>
+
+    <description>
+        A simple Mule 4 REST API for learning.
+    </description>
 
 
     <!-- ====================================================== -->
@@ -27,9 +35,15 @@
     <repositories>
 
         <repository>
+
             <id>mulesoft-releases</id>
+
             <name>MuleSoft Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
+
+            <url>
+                https://repository.mulesoft.org/releases/
+            </url>
+
         </repository>
 
     </repositories>
@@ -38,9 +52,15 @@
     <pluginRepositories>
 
         <pluginRepository>
+
             <id>mulesoft-releases</id>
+
             <name>MuleSoft Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
+
+            <url>
+                https://repository.mulesoft.org/releases/
+            </url>
+
         </pluginRepository>
 
     </pluginRepositories>
@@ -52,15 +72,25 @@
 
     <properties>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>
+            UTF-8
+        </project.build.sourceEncoding>
 
-        <mule.runtime.version>4.12.2</mule.runtime.version>
+        <mule.runtime.version>
+            4.12.2
+        </mule.runtime.version>
 
-        <mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
+        <mule.maven.plugin.version>
+            4.5.3
+        </mule.maven.plugin.version>
 
-        <mule.http.connector.version>1.11.0</mule.http.connector.version>
+        <mule.http.connector.version>
+            1.11.0
+        </mule.http.connector.version>
 
-        <java.version>17</java.version>
+        <java.version>
+            17
+        </java.version>
 
     </properties>
 
@@ -72,10 +102,23 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.mule.connectors</groupId>
-            <artifactId>mule-http-connector</artifactId>
-            <version>${mule.http.connector.version}</version>
-            <classifier>mule-plugin</classifier>
+
+            <groupId>
+                org.mule.connectors
+            </groupId>
+
+            <artifactId>
+                mule-http-connector
+            </artifactId>
+
+            <version>
+                ${mule.http.connector.version}
+            </version>
+
+            <classifier>
+                mule-plugin
+            </classifier>
+
         </dependency>
 
     </dependencies>
@@ -91,12 +134,21 @@
 
             <plugin>
 
-                <groupId>org.mule.tools.maven</groupId>
-                <artifactId>mule-maven-plugin</artifactId>
+                <groupId>
+                    org.mule.tools.maven
+                </groupId>
 
-                <version>${mule.maven.plugin.version}</version>
+                <artifactId>
+                    mule-maven-plugin
+                </artifactId>
 
-                <extensions>true</extensions>
+                <version>
+                    ${mule.maven.plugin.version}
+                </version>
+
+                <extensions>
+                    true
+                </extensions>
 
                 <configuration>
 
@@ -114,19 +166,28 @@
 
 
     <!-- ====================================================== -->
-    <!-- CLOUDHUB 2.0 DEPLOYMENT PROFILE -->
+    <!-- CLOUDHUB 2.0 DEPLOYMENT -->
     <!-- ====================================================== -->
 
     <profiles>
 
         <profile>
 
-            <id>cloudhub2-deploy</id>
+            <id>
+                cloudhub2-deploy
+            </id>
+
+
+            <!-- Activate when -DmuleDeploy is used -->
 
             <activation>
 
                 <property>
-                    <name>muleDeploy</name>
+
+                    <name>
+                        muleDeploy
+                    </name>
+
                 </property>
 
             </activation>
@@ -138,8 +199,13 @@
 
                     <plugin>
 
-                        <groupId>org.mule.tools.maven</groupId>
-                        <artifactId>mule-maven-plugin</artifactId>
+                        <groupId>
+                            org.mule.tools.maven
+                        </groupId>
+
+                        <artifactId>
+                            mule-maven-plugin
+                        </artifactId>
 
                         <version>
                             ${mule.maven.plugin.version}
@@ -150,74 +216,104 @@
 
                             <cloudhub2Deployment>
 
-                                <!-- Anypoint Platform URL -->
+
+                                <!-- ================================================= -->
+                                <!-- ANYPOINT PLATFORM -->
+                                <!-- ================================================= -->
+
                                 <uri>
                                     ${anypoint.uri}
                                 </uri>
 
 
-                                <!-- CloudHub 2.0 provider -->
+                                <!-- ================================================= -->
+                                <!-- PROVIDER -->
+                                <!-- ================================================= -->
+
                                 <provider>
                                     MC
                                 </provider>
 
 
-                                <!-- Business Group -->
+                                <!-- ================================================= -->
+                                <!-- BUSINESS GROUP -->
+                                <!-- ================================================= -->
+
                                 <businessGroupId>
                                     ${anypoint.businessGroupId}
                                 </businessGroupId>
 
 
-                                <!-- Environment -->
+                                <!-- ================================================= -->
+                                <!-- ENVIRONMENT -->
+                                <!-- ================================================= -->
+
                                 <environment>
                                     ${anypoint.environment}
                                 </environment>
 
 
-                                <!-- CloudHub 2.0 target -->
+                                <!-- ================================================= -->
+                                <!-- CLOUDHUB 2.0 TARGET -->
+                                <!-- ================================================= -->
+
                                 <target>
                                     ${anypoint.target}
                                 </target>
 
 
-                                <!-- Mule Runtime -->
+                                <!-- ================================================= -->
+                                <!-- MULE RUNTIME -->
+                                <!-- ================================================= -->
+
                                 <muleVersion>
                                     ${mule.runtime.version}
                                 </muleVersion>
 
 
-                                <!-- Application name -->
+                                <!-- ================================================= -->
+                                <!-- APPLICATION NAME -->
+                                <!-- ================================================= -->
+
                                 <applicationName>
                                     ${anypoint.applicationName}
                                 </applicationName>
 
 
-                                <!-- Number of replicas -->
+                                <!-- ================================================= -->
+                                <!-- REPLICAS -->
+                                <!-- ================================================= -->
+
                                 <replicas>
                                     ${anypoint.replicas}
                                 </replicas>
 
 
-                                <!-- vCores -->
+                                <!-- ================================================= -->
+                                <!-- VCORES -->
+                                <!-- ================================================= -->
+
                                 <vCores>
                                     ${anypoint.vCores}
                                 </vCores>
 
 
-                                <!-- Connected App authentication -->
+                                <!-- ================================================= -->
+                                <!-- CONNECTED APP AUTHENTICATION -->
+                                <!-- ================================================= -->
+
                                 <connectedAppClientId>
                                     ${env.ANYPOINT_CLIENT_ID}
                                 </connectedAppClientId>
-
 
                                 <connectedAppClientSecret>
                                     ${env.ANYPOINT_CLIENT_SECRET}
                                 </connectedAppClientSecret>
 
-
                                 <connectedAppGrantType>
                                     client_credentials
                                 </connectedAppGrantType>
+
 
                             </cloudhub2Deployment>
 
