@@ -1,33 +1,225 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-      xmlns:http="http://www.mulesoft.org/schema/mule/http"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="
-        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-        http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-        http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 
-    <configuration-properties file="application.properties" />
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <http:listener-config name="HTTP_Listener_config">
-        <http:listener-connection host="0.0.0.0" port="${http.port}" />
-    </http:listener-config>
+    <modelVersion>4.0.0</modelVersion>
 
-    <flow name="hello-mule-flow">
-        <http:listener config-ref="HTTP_Listener_config"
-                       path="/hello"
-                       allowedMethods="GET" />
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    message: "Hello from MuleSoft!",
-    application: "hello-mule  added by Saikiran selenium"
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-</mule>
+    <!-- ====================================================== -->
+    <!-- PROJECT -->
+    <!-- ====================================================== -->
+
+    <groupId>com.example</groupId>
+    <artifactId>hello-mule</artifactId>
+    <version>1.0.0</version>
+
+    <packaging>mule-application</packaging>
+
+    <name>hello-mule</name>
+    <description>A simple Mule 4 REST API for learning.</description>
+
+
+    <!-- ====================================================== -->
+    <!-- REPOSITORIES -->
+    <!-- ====================================================== -->
+
+    <repositories>
+
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>https://repository.mulesoft.org/releases/</url>
+        </repository>
+
+    </repositories>
+
+
+    <pluginRepositories>
+
+        <pluginRepository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Releases Repository</name>
+            <url>https://repository.mulesoft.org/releases/</url>
+        </pluginRepository>
+
+    </pluginRepositories>
+
+
+    <!-- ====================================================== -->
+    <!-- PROPERTIES -->
+    <!-- ====================================================== -->
+
+    <properties>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <mule.runtime.version>4.12.2</mule.runtime.version>
+
+        <mule.maven.plugin.version>4.5.3</mule.maven.plugin.version>
+
+        <mule.http.connector.version>1.11.0</mule.http.connector.version>
+
+        <java.version>17</java.version>
+
+    </properties>
+
+
+    <!-- ====================================================== -->
+    <!-- DEPENDENCIES -->
+    <!-- ====================================================== -->
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <version>${mule.http.connector.version}</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+
+    </dependencies>
+
+
+    <!-- ====================================================== -->
+    <!-- BUILD -->
+    <!-- ====================================================== -->
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+
+                <version>${mule.maven.plugin.version}</version>
+
+                <extensions>true</extensions>
+
+                <configuration>
+
+                    <runtimeVersion>
+                        ${mule.runtime.version}
+                    </runtimeVersion>
+
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
+    <!-- ====================================================== -->
+    <!-- CLOUDHUB 2.0 DEPLOYMENT -->
+    <!-- ====================================================== -->
+
+    <profiles>
+
+        <profile>
+
+            <id>cloudhub2-deploy</id>
+
+            <activation>
+
+                <property>
+                    <name>muleDeploy</name>
+                </property>
+
+            </activation>
+
+
+            <build>
+
+                <plugins>
+
+                    <plugin>
+
+                        <groupId>org.mule.tools.maven</groupId>
+                        <artifactId>mule-maven-plugin</artifactId>
+
+                        <version>
+                            ${mule.maven.plugin.version}
+                        </version>
+
+
+                        <configuration>
+
+                            <cloudhub2Deployment>
+
+                                <!-- Anypoint Platform -->
+                                <uri>
+                                    ${anypoint.uri}
+                                </uri>
+
+                                <!-- CloudHub 2.0 -->
+                                <provider>
+                                    MC
+                                </provider>
+
+                                <!-- Business Group -->
+                                <businessGroupId>
+                                    ${anypoint.businessGroupId}
+                                </businessGroupId>
+
+                                <!-- Environment -->
+                                <environment>
+                                    ${anypoint.environment}
+                                </environment>
+
+                                <!-- Deployment Target -->
+                                <target>
+                                    ${anypoint.target}
+                                </target>
+
+                                <!-- Mule Runtime -->
+                                <muleVersion>
+                                    ${mule.runtime.version}
+                                </muleVersion>
+
+                                <!-- Application -->
+                                <applicationName>
+                                    ${anypoint.applicationName}
+                                </applicationName>
+
+                                <!-- Replicas -->
+                                <replicas>
+                                    ${anypoint.replicas}
+                                </replicas>
+
+                                <!-- vCores -->
+                                <vCores>
+                                    ${anypoint.vCores}
+                                </vCores>
+
+                                <!-- Connected App -->
+                                <connectedAppClientId>
+                                    ${env.ANYPOINT_CLIENT_ID}
+                                </connectedAppClientId>
+
+                                <connectedAppClientSecret>
+                                    ${env.ANYPOINT_CLIENT_SECRET}
+                                </connectedAppClientSecret>
+
+                                <connectedAppGrantType>
+                                    client_credentials
+                                </connectedAppGrantType>
+
+                            </cloudhub2Deployment>
+
+                        </configuration>
+
+                    </plugin>
+
+                </plugins>
+
+            </build>
+
+        </profile>
+
+    </profiles>
+
+</project>
