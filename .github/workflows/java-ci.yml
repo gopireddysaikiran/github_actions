@@ -1,24 +1,124 @@
-name: Java CI
+name: MuleSoft CI/CD
 
 on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
   workflow_dispatch:
 
+
 jobs:
+
+  # ==========================================================
+  # BUILD JOB
+  # ==========================================================
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+
+      # 1. Get source code from GitHub
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Set up Java
+
+      # 2. Install Java 17
+      - name: Set up Java 17
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
+          cache: maven
 
-      - name: Compile Java
-        run: javac Main.java
 
-      - name: Run Java application
-        run: java Main
+      # 3. Build Mule application
+      - name: Build Mule application
+        working-directory: hello-mule
+        run: |
+          mvn --batch-mode --no-transfer-progress clean package
+
+
+      # 4. Store the generated Mule JAR
+      - name: Upload Mule application artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-mule-package
+          path: hello-mule/target/*-mule-application.jar
+
+
+  # ==========================================================
+  # DEPLOY JOB
+  # ==========================================================
+  deploy:
+
+    needs: build
+
+    # Do NOT deploy Pull Requests
+    if: github.event_name != 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    environment: cloudhub-production
+
+    steps:
+
+      # 1. Get source code
+      #
+      # We still need pom.xml because Maven needs the
+      # Mule Maven Plugin configuration from the project.
+      #
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+
+      # 2. Install Java 17
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+
+      # 3. Download the JAR created by BUILD
+      - name: Download Mule application artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: hello-mule-package
+          path: artifact
+
+
+      # 4. Show downloaded artifact
+      #
+      # This is only for learning/debugging.
+      # It lets us see that the JAR actually arrived.
+      #
+      - name: Verify downloaded artifact
+        run: |
+          echo "Downloaded Mule application:"
+          ls -lh artifact/
+
+
+      # 5. Deploy to CloudHub 2.0
+      - name: Deploy to CloudHub 2.0
+        working-directory: hello-mule
+
+        env:
+          # Connected App credentials
+          # These MUST be stored in GitHub Secrets.
+          ANYPOINT_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }}
+          ANYPOINT_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }}
+
+        run: |
+          mvn --batch-mode --no-transfer-progress deploy -DmuleDeploy \
+            -Danypoint.uri="https://anypoint.mulesoft.com" \
+            -Danypoint.businessGroupId="c33b559a-6e86-4aea-8f57-9b28faeb2881" \
+            -Danypoint.environment="Sandbox" \
+            -Danypoint.target="Cloudhub-US-East-2" \
+            -Danypoint.applicationName="hello-mule-saikiran" \
+            -Danypoint.replicas="1" \
+            -Danypoint.vCores="0.1"
