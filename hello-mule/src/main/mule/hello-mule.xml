@@ -25,7 +25,7 @@ output application/json
 ---
 {
     message: "Hello from MuleSoft!",
-    application: "hello-mule"
+    application: "hello-mule  added by Saikiran"
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
