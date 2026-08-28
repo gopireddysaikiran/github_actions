@@ -85,7 +85,7 @@ jobs:
 
 
       # 3. Download the JAR created by BUILD
-      - name: Download Mule application artifact
+      - name: Download Mule application artifacts
         uses: actions/download-artifact@v5
         with:
           name: hello-mule-package
@@ -101,6 +101,8 @@ jobs:
         run: |
           echo "Downloaded Mule application:"
           ls -lh artifact/
+
+
 
 
       # 5. Deploy to CloudHub 2.0
