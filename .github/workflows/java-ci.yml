@@ -5,10 +5,15 @@ on:
     branches:
       - main
 
+  pull_request:
+
+  workflow_dispatch:
+
+
 jobs:
 
   # ==========================================================
-  # BUILD JOB
+  # BUILD
   # ==========================================================
   build:
 
@@ -16,7 +21,7 @@ jobs:
 
     steps:
 
-      # 1. Get source code from GitHub
+      # 1. Checkout source code
       - name: Checkout code
         uses: actions/checkout@v5
 
@@ -37,7 +42,7 @@ jobs:
           mvn --batch-mode --no-transfer-progress clean package
 
 
-      # 4. Store the generated Mule JAR
+      # 4. Upload generated Mule JAR
       - name: Upload Mule application artifact
         uses: actions/upload-artifact@v4
         with:
@@ -46,13 +51,14 @@ jobs:
 
 
   # ==========================================================
-  # DEPLOY JOB
+  # DEPLOY
   # ==========================================================
   deploy:
 
     needs: build
 
-    # Do NOT deploy Pull Requests
+    # Deploy only for push to main / manual execution.
+    # Pull requests will build but will NOT deploy.
     if: github.event_name != 'pull_request'
 
     runs-on: ubuntu-latest
@@ -61,10 +67,10 @@ jobs:
 
     steps:
 
-      # 1. Get source code
+      # 1. Checkout source code
       #
-      # We still need pom.xml because Maven needs the
-      # Mule Maven Plugin configuration from the project.
+      # We need the pom.xml because the Mule Maven Plugin
+      # contains the CloudHub 2.0 deployment configuration.
       #
       - name: Checkout code
         uses: actions/checkout@v5
@@ -79,43 +85,35 @@ jobs:
           cache: maven
 
 
-      # 3. Download the JAR created by BUILD
-      - name: Download Mule application artifacts
+      # 3. Download the JAR produced by BUILD
+      - name: Download Mule application artifact
         uses: actions/download-artifact@v5
         with:
           name: hello-mule-package
           path: artifact
 
 
-      # 4. Show downloaded artifact
-      #
-      # This is only for learning/debugging.
-      # It lets us see that the JAR actually arrived.
-      #
+      # 4. Verify artifact
       - name: Verify downloaded artifact
         run: |
           echo "Downloaded Mule application:"
           ls -lh artifact/
 
 
-
-
-      # 5. Deploy to CloudHub 2.0
-      - name: Deploy to CloudHub 2.0
+      # 5. Deploy the EXISTING artifact
+      #
+      # IMPORTANT:
+      # mule:deploy deploys the JAR directly.
+      # It does NOT run clean/package again.
+      #
+      - name: Deploy Mule application to CloudHub 2.0
         working-directory: hello-mule
 
         env:
-          # Connected App credentials
-          # These MUST be stored in GitHub Secrets.
           ANYPOINT_CLIENT_ID: ${{ secrets.ANYPOINT_CLIENT_ID }}
           ANYPOINT_CLIENT_SECRET: ${{ secrets.ANYPOINT_CLIENT_SECRET }}
 
         run: |
-          mvn --batch-mode --no-transfer-progress deploy -DmuleDeploy \
-            -Danypoint.uri="https://anypoint.mulesoft.com" \
-            -Danypoint.businessGroupId="c33b559a-6e86-4aea-8f57-9b28faeb2881" \
-            -Danypoint.environment="Sandbox" \
-            -Danypoint.target="Cloudhub-US-East-2" \
-            -Danypoint.applicationName="hello-mule-saikiran" \
-            -Danypoint.replicas="1" \
-            -Danypoint.vCores="0.1"
+          mvn --batch-mode --no-transfer-progress \
+            mule:deploy \
+            -Dmule.artifact="../artifact/hello-mule-1.0.0-mule-application.jar"
