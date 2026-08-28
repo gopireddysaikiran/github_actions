@@ -76,6 +76,7 @@
                         <configuration>
                             <cloudhub2Deployment>
                                 <uri>${anypoint.uri}</uri>
+                                <provider>MC</provider>
                                 <businessGroupId>${anypoint.businessGroupId}</businessGroupId>
                                 <environment>${anypoint.environment}</environment>
                                 <target>${anypoint.target}</target>
