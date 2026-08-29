@@ -67,35 +67,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 3. Download build artifact
-      - name: Download Mule application
-        uses: actions/download-artifact@v5
-        with:
-          name: hello-mule-package
-          path: artifact
-
-
-
-      # 4. Verify artifact
-      - name: Verify artifact
-        run: |
-          echo "Downloaded Mule application:"
-          ls -lh artifact/
-
-      # 5. Publish to Anypoint Exchange
-      - name: Publish to Anypoint Exchange
-        working-directory: hello-mule
-        env:
-          ANYPOINT_CLIENT_ID: "2a52e2d639b640dc96d15e31c29049f7"
-          ANYPOINT_CLIENT_SECRET: "580360d788174C369eF13dA1Ed997764"
-        run: |
-          echo "Publishing Mule application to Anypoint Exchange..."
-          mvn --batch-mode --no-transfer-progress \
-            deploy \
-            -DskipTests
-
-      # 6. Deploy to CloudHub 2.0
-      - name: Deploy to CloudHub 2.0
+      # 3. Build, Publish to Exchange, and Deploy to CloudHub 2.0
+      - name: Build, Publish to Exchange, and Deploy to CloudHub 2.0
         working-directory: hello-mule
         env:
           ANYPOINT_CLIENT_ID: "2a52e2d639b640dc96d15e31c29049f7"
@@ -109,9 +82,9 @@ jobs:
           ANYPOINT_VCORES: "0.1"
 
         run: |
-          echo "Deploying to ${ANYPOINT_URI} / ${ANYPOINT_ENVIRONMENT} / ${ANYPOINT_TARGET}"
+          echo "Building, publishing to Anypoint Exchange, and deploying to CloudHub 2.0..."
           mvn --batch-mode --no-transfer-progress \
-            deploy \
+            clean package deploy \
             -P cloudhub2-deploy \
             -DmuleDeploy \
             -Danypoint.uri="${ANYPOINT_URI}" \
