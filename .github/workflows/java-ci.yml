@@ -82,7 +82,19 @@ jobs:
           echo "Downloaded Mule application:"
           ls -lh artifact/
 
-      # 5. Deploy to CloudHub 2.0
+      # 5. Publish to Anypoint Exchange
+      - name: Publish to Anypoint Exchange
+        working-directory: hello-mule
+        env:
+          ANYPOINT_CLIENT_ID: "2a52e2d639b640dc96d15e31c29049f7"
+          ANYPOINT_CLIENT_SECRET: "580360d788174C369eF13dA1Ed997764"
+        run: |
+          echo "Publishing Mule application to Anypoint Exchange..."
+          mvn --batch-mode --no-transfer-progress \
+            deploy \
+            -DskipTests
+
+      # 6. Deploy to CloudHub 2.0
       - name: Deploy to CloudHub 2.0
         working-directory: hello-mule
         env:

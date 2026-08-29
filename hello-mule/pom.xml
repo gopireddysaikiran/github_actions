@@ -67,6 +67,22 @@
 
 
     <!-- ====================================================== -->
+    <!-- EXCHANGE DISTRIBUTION MANAGEMENT -->
+    <!-- ====================================================== -->
+
+    <distributionManagement>
+        <repository>
+            <id>Exchange</id>
+            <name>Anypoint Exchange</name>
+            <url>
+                https://maven.anypoint.mulesoft.com/api/v3/organizations/c33b559a-6e86-4aea-8f57-9b28faeb2881/maven
+            </url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
+
+
+    <!-- ====================================================== -->
     <!-- PROPERTIES -->
     <!-- ====================================================== -->
 
