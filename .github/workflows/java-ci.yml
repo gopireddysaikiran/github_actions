@@ -91,12 +91,13 @@ jobs:
           ANYPOINT_URI: "https://anypoint.mulesoft.com"
           ANYPOINT_BUSINESS_GROUP_ID: "c33b559a-6e86-4aea-8f57-9b28faeb2881"
           ANYPOINT_ENVIRONMENT: "Sandbox"
+          ANYPOINT_TARGET: "us-east-2"
           ANYPOINT_APPLICATION_NAME: "hello-mule-saikiran"
           ANYPOINT_REPLICAS: "1"
           ANYPOINT_VCORES: "0.1"
 
         run: |
-          echo "Deploying to ${ANYPOINT_URI} / ${ANYPOINT_ENVIRONMENT}"
+          echo "Deploying to ${ANYPOINT_URI} / ${ANYPOINT_ENVIRONMENT} / ${ANYPOINT_TARGET}"
           mvn --batch-mode --no-transfer-progress \
             deploy \
             -P cloudhub2-deploy \
@@ -104,6 +105,7 @@ jobs:
             -Danypoint.uri="${ANYPOINT_URI}" \
             -Danypoint.businessGroupId="${ANYPOINT_BUSINESS_GROUP_ID}" \
             -Danypoint.environment="${ANYPOINT_ENVIRONMENT}" \
+            -Danypoint.target="${ANYPOINT_TARGET}" \
             -Danypoint.applicationName="${ANYPOINT_APPLICATION_NAME}" \
             -Danypoint.replicas="${ANYPOINT_REPLICAS}" \
             -Danypoint.vCores="${ANYPOINT_VCORES}"
