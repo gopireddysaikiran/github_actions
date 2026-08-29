@@ -90,7 +90,7 @@ jobs:
           ANYPOINT_CLIENT_SECRET: "580360d788174C369eF13dA1Ed997764"
           ANYPOINT_URI: "https://anypoint.mulesoft.com"
           ANYPOINT_BUSINESS_GROUP_ID: "c33b559a-6e86-4aea-8f57-9b28faeb2881"
-          ANYPOINT_ENVIRONMENT: "b7506843-d9a2-453e-b25b-9092790c8bbd"
+          ANYPOINT_ENVIRONMENT: "Sandbox"
           ANYPOINT_TARGET: "Cloudhub-US-East-2"
           ANYPOINT_APPLICATION_NAME: "hello-mule-saikiran"
           ANYPOINT_REPLICAS: "1"
