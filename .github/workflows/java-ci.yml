@@ -74,7 +74,7 @@ jobs:
           name: hello-mule-package
           path: artifact
 
-          
+
 
       # 4. Verify artifact
       - name: Verify artifact
@@ -86,8 +86,8 @@ jobs:
       - name: Deploy to CloudHub 2.0
         working-directory: hello-mule
         env:
-          ANYPOINT_CLIENT_ID: "2a52e2d639b640dc9d6d15e31c2904f7"
-          ANYPOINT_CLIENT_SECRET: "580360d788174C369eF13dA1Ed997764"
+          ANYPOINT_CLIENT_ID: "663129211b1c4104932254508b0b76d6"
+          ANYPOINT_CLIENT_SECRET: "F4eA1CdBF57d4B848347AF85daBa628A"
           ANYPOINT_URI: "https://anypoint.mulesoft.com"
           ANYPOINT_BUSINESS_GROUP_ID: "c33b559a-6e86-4aea-8f57-9b28faeb2881"
           ANYPOINT_ENVIRONMENT: "b7506843-d9a2-453e-b25b-9092790c8bbd"
