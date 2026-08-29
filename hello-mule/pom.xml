@@ -77,15 +77,15 @@
         </project.build.sourceEncoding>
 
         <mule.runtime.version>
-            4.8.0
+            4.7.0
         </mule.runtime.version>
 
         <mule.maven.plugin.version>
-            4.5.3
+            4.3.0
         </mule.maven.plugin.version>
 
         <mule.http.connector.version>
-            1.9.0
+            1.8.0
         </mule.http.connector.version>
 
         <java.version>
