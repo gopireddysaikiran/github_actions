@@ -18,7 +18,7 @@
 
     <artifactId>hello-mule</artifactId>
 
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 
     <packaging>mule-application</packaging>
 
@@ -110,7 +110,7 @@
         </mule.maven.plugin.version>
 
         <mule.http.connector.version>
-            1.8.0
+            1.10.3
         </mule.http.connector.version>
 
         <java.version>
@@ -347,10 +347,12 @@
                                     ${anypoint.vCores}
                                 </vCores>
 
+                                <deploymentTimeout>180000</deploymentTimeout>
+                                <skipDeploymentVerification>true</skipDeploymentVerification>
 
-                                <!-- ================================================= -->
-                                <!-- CONNECTED APP AUTHENTICATION -->
-                                <!-- ================================================= -->
+                                <properties>
+                                    <http.port>8081</http.port>
+                                </properties>
 
                                 <connectedAppClientId>
                                     ${env.ANYPOINT_CLIENT_ID}
