@@ -74,7 +74,7 @@ jobs:
           ANYPOINT_ENVIRONMENT: "Sandbox"
           ANYPOINT_TARGET: "Cloudhub-US-East-2"
           ANYPOINT_APPLICATION_NAME: "hello-mule-saikiran"
-          ANYPOINT_REPLICAS: "1"
+          ANYPOINT_REPLICAS: "2"
           ANYPOINT_VCORES: "0.1"
           ASSET_GROUP_ID: "c33b559a-6e86-4aea-8f57-9b28faeb2881"
           ASSET_ID: "hello-mule"
