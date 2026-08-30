@@ -84,7 +84,7 @@ jobs:
         run: |
           echo "Building, publishing to Anypoint Exchange, and deploying to CloudHub 2.0..."
           mvn --batch-mode --no-transfer-progress \
-            clean package deploy \
+            clean deploy \
             -P cloudhub2-deploy \
             -DmuleDeploy \
             -Danypoint.uri="${ANYPOINT_URI}" \
