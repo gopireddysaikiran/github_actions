@@ -18,7 +18,7 @@
 
     <artifactId>hello-mule</artifactId>
 
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <packaging>mule-application</packaging>
 
@@ -102,7 +102,7 @@
         </project.build.sourceEncoding>
 
         <mule.runtime.version>
-            4.7.0
+            4.6.0
         </mule.runtime.version>
 
         <mule.maven.plugin.version>
