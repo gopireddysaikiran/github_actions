@@ -73,7 +73,7 @@ jobs:
           server-username: EXCHANGE_USERNAME
           server-password: EXCHANGE_PASSWORD
 
-      # 3. Publish to Exchange, then deploy to CloudHub 2.0
+      # 3. Package, publish via Exchange API (avoids broken exchange-pre-deploy), then CloudHub 2.0
       - name: Publish to Exchange and deploy to CloudHub 2.0
         working-directory: hello-mule
         env:
@@ -86,12 +86,54 @@ jobs:
           ANYPOINT_APPLICATION_NAME: "hello-mule-saikiran"
           ANYPOINT_REPLICAS: "1"
           ANYPOINT_VCORES: "0.1"
+          ASSET_GROUP_ID: "c33b559a-6e86-4aea-8f57-9b28faeb2881"
+          ASSET_ID: "hello-mule"
+          ASSET_VERSION: "1.0.1"
 
         run: |
-          echo "Publishing hello-mule to Anypoint Exchange..."
-          mvn --batch-mode --no-transfer-progress -e \
-            clean deploy \
-            -DskipTests
+          set -euo pipefail
+
+          echo "Packaging hello-mule..."
+          mvn --batch-mode --no-transfer-progress -e clean package -DskipTests
+
+          JAR="target/${ASSET_ID}-${ASSET_VERSION}-mule-application.jar"
+          if [ ! -f "$JAR" ]; then
+            echo "Expected Mule jar not found: $JAR"
+            ls -la target || true
+            exit 1
+          fi
+
+          echo "Requesting Anypoint access token..."
+          TOKEN_JSON="$(curl -sS -X POST "${ANYPOINT_URI}/accounts/api/v2/oauth/token" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "client_id=${ANYPOINT_CLIENT_ID}" \
+            --data-urlencode "client_secret=${ANYPOINT_CLIENT_SECRET}" \
+            --data-urlencode "grant_type=client_credentials")"
+          TOKEN="$(printf '%s' "$TOKEN_JSON" | python3 -c "import json,sys; print(json.load(sys.stdin).get('access_token',''))")"
+          if [ -z "$TOKEN" ]; then
+            echo "Failed to obtain Anypoint access token"
+            printf '%s' "$TOKEN_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); d.pop('access_token', None); print(d)"
+            exit 1
+          fi
+
+          echo "Publishing ${ASSET_ID}:${ASSET_VERSION} to Anypoint Exchange..."
+          PUBLISH_URL="${ANYPOINT_URI}/exchange/api/v2/organizations/${ASSET_GROUP_ID}/assets/${ASSET_GROUP_ID}/${ASSET_ID}/${ASSET_VERSION}"
+          HTTP_CODE="$(curl -sS -o /tmp/exchange-publish.json -w "%{http_code}" \
+            -H "Authorization: bearer ${TOKEN}" \
+            -H "x-sync-publication: true" \
+            -F "files.pom=@pom.xml" \
+            -F "files.mule-application.jar=@${JAR}" \
+            "$PUBLISH_URL")"
+
+          echo "Exchange publish HTTP status: ${HTTP_CODE}"
+          cat /tmp/exchange-publish.json || true
+          echo
+          if [ "$HTTP_CODE" = "409" ]; then
+            echo "Asset version already exists in Exchange; continuing to CloudHub deploy."
+          elif [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "Exchange publish failed"
+            exit 1
+          fi
 
           echo "Deploying to CloudHub 2.0..."
           mvn --batch-mode --no-transfer-progress -e \
