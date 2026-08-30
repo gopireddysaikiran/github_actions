@@ -47,6 +47,14 @@
 
         </repository>
 
+        <!-- Required by exchange-pre-deploy to fetch publication status from Exchange -->
+        <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Anypoint Exchange</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+            <layout>default</layout>
+        </repository>
+
     </repositories>
 
 
@@ -73,7 +81,7 @@
 
     <distributionManagement>
         <repository>
-            <id>Exchange</id>
+            <id>anypoint-exchange-v3</id>
             <name>Anypoint Exchange</name>
             <url>
                 https://maven.anypoint.mulesoft.com/api/v3/organizations/c33b559a-6e86-4aea-8f57-9b28faeb2881/maven
@@ -172,6 +180,8 @@
                     <runtimeVersion>
                         ${mule.runtime.version}
                     </runtimeVersion>
+
+                    <classifier>mule-application</classifier>
 
                 </configuration>
 
