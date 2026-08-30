@@ -13,7 +13,8 @@
     <!-- PROJECT INFORMATION -->
     <!-- ====================================================== -->
 
-    <groupId>com.example</groupId>
+    <!-- Exchange / CloudHub 2.0 require the Anypoint organization ID as groupId -->
+    <groupId>c33b559a-6e86-4aea-8f57-9b28faeb2881</groupId>
 
     <artifactId>hello-mule</artifactId>
 
@@ -300,6 +301,14 @@
                                 <muleVersion>
                                     ${mule.runtime.version}
                                 </muleVersion>
+
+                                <releaseChannel>
+                                    LTS
+                                </releaseChannel>
+
+                                <javaVersion>
+                                    17
+                                </javaVersion>
 
 
                                 <!-- ================================================= -->
